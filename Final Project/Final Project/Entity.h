@@ -19,7 +19,7 @@ class Entity
 public:
 	Entity(void);
 	~Entity(void);
-	Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt);
+	Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, float rotationSpeed);
 	void AddForce(vec3 force);
 	vec3 Seek(vec3 target, float mag);
 	vec3 Arrive(vec3 target);

@@ -70,9 +70,9 @@ int counter;
 
 //head Model
 Shape* Model;
-Entity* PaddleA; 
-Entity* PaddleB; 
-Entity* Ball; 
+Entity PaddleA; 
+Entity PaddleB; 
+Entity Ball; 
 
 //model helper
 ModelHelper mhelper; 
@@ -145,7 +145,7 @@ void init()
 	counter = 0;
 
 	rotationAmount = 0.0;
-	//Create the Shapes
+	//Create the Shapes/Models
 
 	//load model
 	// Read our .obj file
@@ -153,8 +153,8 @@ void init()
 	vector<vec2> uvs;
 	vector<vec3> normals; 
 	
-	string file = "Model/Cube.obj"; 
-	bool res = mhelper.loadModelFile("Model/Cube.obj", vertices, uvs, normals);
+	string file = "Models/Cube.obj"; 
+	bool res = mhelper.loadModelFile("Models/Cube.obj", vertices, uvs, normals);
 	if (res == true)
 	{
 	cout << "Model loaded successfully!" << endl;
@@ -164,12 +164,14 @@ void init()
 	cout << "Model could not be loaded!" << endl;
 	}
 
-	vec3 initialPosition = vec3(0, 0, 0); 
-	vec3 scale = vec3(1.0f, 1.0f, 1.0f); 
+	vec3 initialPosition = vec3(0, 0, -1.3f); 
+	vec3 scale = vec3(0.5f, 0.5f, 0.5f); 
 	vec3 rotAxis = vec3(0, 0, 1.0f); 
-	float rotAmt = 1.0f; 
+	float rotAmt = 1.2f;
+	float rotSpeed = 0.1f; 
 	const GLsizei size = vertices.size();
-	PaddleA = new Entity(new Shape(vertices, size, normals, uvs, program), initialPosition, scale, rotAxis, rotAmt); 
+	Shape* tempShape = new Shape(vertices, size, normals, uvs, program); 
+	PaddleA = Entity(tempShape, initialPosition, scale, rotAxis, rotAmt, rotSpeed); 
 
 
 	//pm.makeTorus(128, 128);
@@ -188,12 +190,20 @@ void init()
 	//pm.makeCube(1.0f); 
 	//pm.makeCylinder(10, 1.0f); 
 
-	vertices = pm.positions;
-	uvs = pm.uvs;
-	normals = pm.normals;
+	//vertices = pm.positions;
+	//uvs = pm.uvs;
+	//normals = pm.normals;
 
 	 //size = vertices.size();
 	//Model = new Shape(vertices, size, normals, uvs, program);
+
+
+
+
+
+
+
+
 
 
 	//glClearColor(0.392f,0.584f,0.929f,1.0f); 
@@ -220,7 +230,7 @@ void update()
 
 
 	//update paddles
-	PaddleA->Update();
+	PaddleA.Update();
 
 	//check if mouse is being held
 	if (mouseHeld == true)
@@ -320,7 +330,7 @@ void draw()
 
 	//te.Draw(); 
 	//Model->Draw(vec3(0.0f, 0.0f, -4.0f), vec3(1.0f, 1.0f, 1.0f), rotAxis, rotationAmount);
-	PaddleA->Draw(); 
+	PaddleA.Draw(); 
 
 	//Triangle->Draw(vec3(0, 0, 0), vec3(1.0f, 1.0f, 1.0f), zRotAxis, rotationAmount);
 

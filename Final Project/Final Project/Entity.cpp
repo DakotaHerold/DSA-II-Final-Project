@@ -23,7 +23,7 @@ Entity::~Entity(void)
 {
 }
 
-Entity::Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt)
+Entity::Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, float rotationSpeed)
 {
 	shape = s;
 	currentPos = cp;
@@ -31,7 +31,7 @@ Entity::Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt)
 	scalar = scale1;
 	rotationAxis = axis;
 	rotationAmount = rotationAmt;
-	rotSpeed = 0.0f;
+	rotSpeed = rotationSpeed;
 
 	//setup physics 
 	mass = 1.0f;
