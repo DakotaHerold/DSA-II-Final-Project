@@ -3,7 +3,7 @@
 
 Camera::Camera()
 {
-	pos = vec3(0, 0, 0);
+	pos = vec3(0.0f, 0.0f, 5.0f);
 	pitch = 0.0f;
 	yaw = 0.0f;
 }

@@ -32,6 +32,10 @@ vec3 rotAxis;
 ShaderHelpers helper;
 //ModelHelper mhelper; 
 GLuint program;
+GLuint program2; 
+GLuint program3; 
+
+
 ProceduralModels pm;
 
 
@@ -60,6 +64,12 @@ bool movingRight;
 bool movingForward;
 bool movingBack;
 
+bool pAup; 
+bool pAdown;
+bool pBup;
+bool pBdown; 
+
+
 //global reference to window
 GLFWwindow* window;
 
@@ -68,11 +78,12 @@ Camera* cam;
 // counter for vector update 
 int counter;
 
-//head Model
-Shape* Model;
+//Models 
 Entity PaddleA; 
 Entity PaddleB; 
 Entity Ball; 
+
+ 
 
 //model helper
 ModelHelper mhelper; 
@@ -92,8 +103,8 @@ void mouseResponse(Entity* triangle)
 	glfwGetWindowSize(window, &width, &height);
 
 	//put mouse input in opengl coordinates
-	float x = (xpos / width) * 2 - 1;
-	float y = (1 - (ypos / height) * 2);
+	float x = (xpos / width) * 2.0f - 1.0f;
+	float y = (1.0f - (ypos / height) * 2.0f);
 
 	//set obj pos to mouse pos for triangle
 
@@ -120,6 +131,15 @@ void init()
 	{
 		glUseProgram(program);
 	}
+
+	program2 = helper.loadShaderProgram("Shaders/vertexShader.glsl", "Shaders/fragmentShader.glsl");
+	if (program2 != 0)
+	{
+		glUseProgram(program2);
+	}
+
+	
+
 	//helper.setShaderColor(program, "uniformColor", 1.0f, 1.0f, .0f);
 
 	cout << "Initializing" << endl;
@@ -141,14 +161,20 @@ void init()
 	movingRight = false;
 	movingForward = false;
 	movingBack = false;
+	
+	pAdown = false; 
+	pAup = false; 
 
 	counter = 0;
 
-	rotationAmount = 0.0;
+	rotationAmount = 0.0f;
 	//Create the Shapes/Models
 
-	//load model
-	// Read our .obj file
+	//1.load model
+	//2.Read our .obj file
+	//3.create Entity with vertices 
+
+	//Paddle A
 	vector<vec3> vertices;
 	vector<vec2> uvs;
 	vector<vec3> normals; 
@@ -164,38 +190,44 @@ void init()
 	cout << "Model could not be loaded!" << endl;
 	}
 
-	vec3 initialPosition = vec3(0, 0, -1.3f); 
-	vec3 scale = vec3(0.5f, 0.5f, 0.5f); 
-	vec3 rotAxis = vec3(0, 0, 1.0f); 
-	float rotAmt = 1.2f;
-	float rotSpeed = 0.1f; 
-	const GLsizei size = vertices.size();
-	Shape* tempShape = new Shape(vertices, size, normals, uvs, program); 
-	PaddleA = Entity(tempShape, initialPosition, scale, rotAxis, rotAmt, rotSpeed); 
-
-
-	//pm.makeTorus(128, 128);
-
-	/*vector<vector<vec3>> k =
-	{
-		{ vec3(1, -1, -1), vec3(1, -1, 1), vec3(1,1,1) },
-		{ vec3(-1, 1, -1), vec3(-1, 1, 1), vec3(-1,-1, 1) },
-		{ vec3(-1, -1, 1), vec3(-1, -1, -1), vec3(-1, 1, -1) },
-		{ vec3(1, 1, -1), vec3(1, 1, 1), vec3(1, -1, 1) },
-	};*/
+	vec3 initialPosition = vec3(-2.7f, 0.0f, 0.0f);
+	vec3 scale = vec3(1.0f, 1.0f, 1.0f); 
+	vec3 rotAxis = vec3(1.0f, 1.0f, 1.0f); 
+	float rotAmt = 0.0f;
+	float rotSpeed = 0.0f; 
+	const GLsizei sizeA = vertices.size();
+	Shape* tempShape = new Shape(vertices, sizeA, normals, uvs, program); 
+	PaddleA = Entity(tempShape, initialPosition, scale, rotAxis, rotAmt, rotSpeed, vertices); 
 	
 
-	//pm.makeBezierSurface(16, 16, k);
-	//pm.makeSphere(10, 10, 1.0f);
-	//pm.makeCube(1.0f); 
-	//pm.makeCylinder(10, 1.0f); 
 
-	//vertices = pm.positions;
-	//uvs = pm.uvs;
-	//normals = pm.normals;
+	//Paddle B
+	vector<vec3> verticesB;
+	vector<vec2> uvsB;
+	vector<vec3> normalsB;
 
-	 //size = vertices.size();
-	//Model = new Shape(vertices, size, normals, uvs, program);
+	string fileB = "Models/Cube.obj";
+	float resB = mhelper.loadModelFile("Models/Cube.obj", verticesB, uvsB, normalsB);
+	if (resB == true)
+	{
+		cout << "Model loaded successfully!" << endl;
+	}
+	else
+	{
+		cout << "Model could not be loaded!" << endl;
+	}
+
+	vec3 initialPositionB = vec3(-2.5f, 0.0f, 0.0f);
+	vec3 scaleB = vec3(1.0f, 1.0f, 1.0f);
+	vec3 rotAxisB = vec3(1.0f, 1.0f, 1.0f);
+	float rotAmtB = 0.0f;
+	float rotSpeedB = 0.0f;
+	const GLsizei sizeB = verticesB.size();
+	Shape* tempShapeB = new Shape(verticesB, sizeB, normalsB, uvsB, program);
+	PaddleB = Entity(tempShapeB, initialPositionB, scaleB, rotAxisB, rotAmtB, rotSpeedB, verticesB);
+	
+	//PaddleB = PaddleA; 
+	//PaddleB.setCurrentPos(vec3(-2.0f, 0.0f, 0.0f)); 
 
 
 
@@ -229,10 +261,66 @@ void update()
 	previousTime = currentTime;
 
 
-	//update paddles
+	//Debugging - print camera pos 
+	//cout << "Cam.x" << cam->pos.x << endl;
+	//cout << "Cam.y" << cam->pos.y << endl;
+	//cout << "Cam.z" << cam->pos.z << endl;
+
+
+	//update paddles - pos, rot , scale, etc.
+	float paddleSpeed = 0.25f; 
+
+	//Paddle A
+	if (pAup == true)
+	{
+		pAdown = false; 
+		PaddleA.AddForce(vec3(0.0f, paddleSpeed, 0.0f));
+	}
+	else if (pAdown == true)
+	{
+		pAup = false; 
+		PaddleA.AddForce(vec3(0.0f, -paddleSpeed, 0.0f));
+	}
+	else
+	{
+		PaddleA.setVelocity(vec3(0.0f, 0.0f, 0.0f));
+	}
 	PaddleA.Update();
 
-	//check if mouse is being held
+	//Debugging - print PaddleA pos
+	cout << "PaddleA.x" << PaddleA.getCurrentPos().x << endl; 
+	cout << "PaddleA.y" << PaddleA.getCurrentPos().y << endl;
+	cout << "PaddleA.z" << PaddleA.getCurrentPos().z << endl;
+
+
+	//Paddle B 
+	if (pBup == true)
+	{
+		pBdown = false;
+		PaddleB.AddForce(vec3(0.0f, paddleSpeed, 0.0f));
+	}
+	else if (pBdown == true)
+	{
+		pBup = false;
+		PaddleB.AddForce(vec3(0.0f, -paddleSpeed, 0.0f));
+	}
+	else
+	{
+		PaddleB.setVelocity(vec3(0.0f, 0.0f, 0.0f));
+	}
+	PaddleB.Update();
+
+	//Debugging - print PaddleB pos
+	cout << "PaddleB.x" << PaddleB.getCurrentPos().x << endl;
+	cout << "PaddleB.y" << PaddleB.getCurrentPos().y << endl;
+	cout << "PaddleB.z" << PaddleB.getCurrentPos().z << endl;
+
+
+
+
+
+
+	/*check if mouse is being held
 	if (mouseHeld == true)
 	{
 		rotationAmount += 0.5f * dt;
@@ -240,7 +328,7 @@ void update()
 	else
 	{
 		rotationAmount = 0;
-	}
+	}*/
 
 	//turn camera here 
 	//make an update camera 
@@ -254,7 +342,9 @@ void update()
 	glfwSetCursorPos(window, 500, 300);
 
 
+	//CAMERA CODE 
 
+	//Camera movement code 
 	//movement speeds 
 	float strafeSpeed = 1.5f;
 	float speed = 1.5f;
@@ -364,6 +454,8 @@ void mouse_button_callback(GLFWwindow* windowPtr, int button, int action, int mo
 
 void keyCallback(GLFWwindow* windowPtr, int key, int scancode, int action, int mods)
 {
+
+	//Camera 
 	//Step 1 - detect WASD input and Q to quit 
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
 	{
@@ -410,6 +502,51 @@ void keyCallback(GLFWwindow* windowPtr, int key, int scancode, int action, int m
 	}
 
 
+
+	//Paddles
+
+	//Paddle A
+	else if (key == GLFW_KEY_Z && action == GLFW_PRESS)
+	{
+		//move paddle A up 
+		pAup = true; 
+	}
+	else if (key == GLFW_KEY_Z && action == GLFW_RELEASE)
+	{
+		pAup = false;
+	}
+	else if (key == GLFW_KEY_X && action == GLFW_PRESS)
+	{
+		//move paddle A down 
+		pAdown = true;
+	}
+	else if (key == GLFW_KEY_X && action == GLFW_RELEASE)
+	{
+		pAdown = false;
+	}
+
+
+	//Paddle B
+	else if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+	{
+		//move paddle B up 
+		pBup = true;
+	}
+	else if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
+	{
+		pBup = false;
+	}
+	else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+	{
+		//move paddle B down 
+		pBdown = true;
+	}
+	else if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
+	{
+		pBdown = false;
+	}
+
+
 }
 
 void mouseMove(GLFWwindow* windowPtr, double x, double y)
@@ -421,8 +558,8 @@ void mouseMove(GLFWwindow* windowPtr, double x, double y)
 	glfwGetWindowSize(windowPtr, &width, &height);
 
 	//put mouse input in opengl coordinates
-	float x1 = (xpos / width) * 2 - 1;
-	float y1 = (1 - (ypos / height) * 2);
+	float x1 = (xpos / width) * 2.0f - 1.0f;
+	float y1 = (1.0f - (ypos / height) * 2.0f);
 
 	//multiplying to speed up looking movement
 	float lookSpeed = 2.5f;
@@ -443,6 +580,10 @@ int main(int argc, char** argv)
 	{
 		return -1;
 	}
+
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);  
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
 	//create window
 	window = glfwCreateWindow(1000, 600, "OpenGL Game and Physics Engine Review", NULL, NULL);
 	if (!window)
@@ -455,7 +596,13 @@ int main(int argc, char** argv)
 	glfwMakeContextCurrent(window);
 
 	//call glew init and init
-	glewInit();
+	GLint glewInitResult =	glewInit();
+	//glewExperimental = GL_TRUE;
+	if (glewInitResult != GLEW_OK)
+	{
+		return -1; 
+	}
+
 	init();
 
 	//callbacks
@@ -465,8 +612,6 @@ int main(int argc, char** argv)
 	glfwSetKeyCallback(window, keyCallback);
 	glfwSetCursorPosCallback(window, mouseMove);
 
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) { return -1; }
 
 	//main loop until user closes window
 	while (!glfwWindowShouldClose(window))

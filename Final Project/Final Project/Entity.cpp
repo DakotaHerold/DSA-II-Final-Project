@@ -23,7 +23,7 @@ Entity::~Entity(void)
 {
 }
 
-Entity::Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, float rotationSpeed)
+Entity::Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, float rotationSpeed, vector<vec3> modelVerts)
 {
 	shape = s;
 	currentPos = cp;
@@ -32,6 +32,7 @@ Entity::Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, flo
 	rotationAxis = axis;
 	rotationAmount = rotationAmt;
 	rotSpeed = rotationSpeed;
+	modelVertices = modelVerts; 
 
 	//setup physics 
 	mass = 1.0f;
@@ -42,7 +43,7 @@ Entity::Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, flo
 	previousTime = 0;
 
 	//calculate minimum bounding box - this needs to go in shape or entity 
-	/*float xmin = INT_MAX;
+	float xmin = INT_MAX;
 	float ymin = INT_MAX;
 	float zmin = INT_MAX;
 	float xmax = INT_MIN;
@@ -51,97 +52,98 @@ Entity::Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, flo
 
 	vector<float> xVals;
 	vector<float> yVals;
-	vector<float> zVals;*/
+	vector<float> zVals;
 
 	//calculate xmin, ymin, xmax, ymax; 
 	//populate vectors 
-	//for (int i = 0; i < vertices.size(); i++)
-	//{
-	//	xVals.push_back(vertices[i].x);
-	//	yVals.push_back(vertices[i].y);
-	//	zVals.push_back(vertices[i].z);
-	//}
+	for (int i = 0; i < modelVertices.size(); i++)
+	{
+		xVals.push_back(modelVertices[i].x);
+		yVals.push_back(modelVertices[i].y);
+		zVals.push_back(modelVertices[i].z);
+	}
 
-	//// xVals for BB
-	//for (int i = 0; i < xVals.size(); i++)
-	//{
-	//	if (xVals[i] < xmin)
-	//	{
-	//		xmin = xVals[i];
-	//	}
+	// xVals for BB
+	for (int i = 0; i < xVals.size(); i++)
+	{
+		if (xVals[i] < xmin)
+		{
+			xmin = xVals[i];
+		}
 
-	//	if (xVals[i] > xmax)
-	//	{
-	//		xmax = xVals[i];
-	//	}
-	//}
+		if (xVals[i] > xmax)
+		{
+			xmax = xVals[i];
+		}
+	}
 
-	//// yVals for BB
-	//for (int i = 0; i < yVals.size(); i++)
-	//{
-	//	if (yVals[i] < ymin)
-	//	{
-	//		ymin = yVals[i];
-	//	}
+	// yVals for BB
+	for (int i = 0; i < yVals.size(); i++)
+	{
+		if (yVals[i] < ymin)
+		{
+			ymin = yVals[i];
+		}
 
-	//	if (yVals[i] > ymax)
-	//	{
-	//		ymax = yVals[i];
-	//	}
-	//}
+		if (yVals[i] > ymax)
+		{
+			ymax = yVals[i];
+		}
+	}
 
-	//// zVals for BB
-	//for (int i = 0; i < zVals.size(); i++)
-	//{
-	//	if (zVals[i] < zmin)
-	//	{
-	//		zmin = zVals[i];
-	//	}
+	// zVals for BB
+	for (int i = 0; i < zVals.size(); i++)
+	{
+		if (zVals[i] < zmin)
+		{
+			zmin = zVals[i];
+		}
 
-	//	if (zVals[i] > zmax)
-	//	{
-	//		zmax = zVals[i];
-	//	}
-	//}
+		if (zVals[i] > zmax)
+		{
+			zmax = zVals[i];
+		}
+	}
 
-	//cout << "Values calculated from .obj" << endl;
-	//cout << endl;
-	//cout << "X min: " << xmin << endl;
-	//cout << "Y min: " << ymin << endl;
-	//cout << "Z min: " << zmin << endl;
-	//cout << "X max: " << xmax << endl;
-	//cout << "Y max: " << ymax << endl;
-	//cout << "Z max: " << zmax << endl;
-	//cout << endl;
+	/*Debugging
+	cout << "Values calculated from .obj" << endl;
+	cout << endl;
+	cout << "X min: " << xmin << endl;
+	cout << "Y min: " << ymin << endl;
+	cout << "Z min: " << zmin << endl;
+	cout << "X max: " << xmax << endl;
+	cout << "Y max: " << ymax << endl;
+	cout << "Z max: " << zmax << endl;
+	cout << endl;*/
 
-	////create bounding vertices based on points
-	//vector<vec3> box;
-	//box.push_back(vec3(xmin, ymin, zmin));
-	//box.push_back(vec3(xmax, ymin, zmin));
-	//box.push_back(vec3(xmin, ymax, zmin));
-	//box.push_back(vec3(xmin, ymin, zmax));
-	//box.push_back(vec3(xmin, ymax, zmax));
-	//box.push_back(vec3(xmax, ymin, zmax));
-	//box.push_back(vec3(xmax, ymax, zmin));
-	//box.push_back(vec3(xmax, ymax, zmax));
+	//create bounding vertices based on points
+	vector<vec3> box;
+	box.push_back(vec3(xmin, ymin, zmin));
+	box.push_back(vec3(xmax, ymin, zmin));
+	box.push_back(vec3(xmin, ymax, zmin));
+	box.push_back(vec3(xmin, ymin, zmax));
+	box.push_back(vec3(xmin, ymax, zmax));
+	box.push_back(vec3(xmax, ymin, zmax));
+	box.push_back(vec3(xmax, ymax, zmin));
+	box.push_back(vec3(xmax, ymax, zmax));
 
-	////OBB 
-	////output 
-	////cout << "Oriented Bounding Box Vertices " << endl; 
-	//for (int i = 0; i < box.size(); i++)
-	//{
-	//	/*cout << endl;
-	//	cout << "X: " << box[i].x << " Y: " << box[i].y << " Z: " << box[i].z << endl;
-	//	cout << endl;*/
-	//}
+	//OBB 
+	//Debugging output 
+	//cout << "Oriented Bounding Box Vertices " << endl; 
+	/*for (int i = 0; i < box.size(); i++)
+	{
+		cout << endl;
+		cout << "X: " << box[i].x << " Y: " << box[i].y << " Z: " << box[i].z << endl;
+		cout << endl;
+	}*/
 
 
-	//BoundingBox A(vec3(0.0f, 0.0f, 0.0f), box, mat4(1));
+	boundingBox = new BoundingBox(currentPos, box, mat4(1));
 }
 
 void Entity::Update()
 {
-	cout << "Updating Entity" << endl;
+	//cout << "Updating Entity" << endl;
 	float currentTime = glfwGetTime();
 	float dt = currentTime - previousTime;
 	previousTime = currentTime;
@@ -165,32 +167,44 @@ void Entity::Update()
 	{
 	currentPos.x = 1.0f;
 	velocity.x = 0.0f;
-	}
-
-
-	if (currentPos.y > 1.0f)
-	{
-	currentPos.y = -1.0f;
-	velocity.y = 0.0f;
-	}
-	else if (currentPos.y < -1.1f)
-	{
-	currentPos.y = 1.0f;
-	velocity.y = 0.0f;
 	}*/
+
+	float yBounds = 4.0f; 
+	if (currentPos.y > yBounds)
+	{
+		currentPos.y = -yBounds + 0.1f;
+		velocity.y = 0.0f;
+	}
+	else if (currentPos.y < -yBounds + 0.1f)
+	{
+		currentPos.y = yBounds - 0.1f;
+		velocity.y = 0.0f;
+	}
 
 	//reset acceleration
 	acceleration = vec3(0.0f, 0.0f, 0.0f);
 
 	//rotate if at all
 	rotationAmount += dt * rotSpeed;
+
+
+	//Update bounding box 
+	boundingBox->setPos(currentPos); 
+	//Debugging bounding box
+	/*cout << endl;
+	cout << "Paddle OBB.x " << boundingBox->position.x << endl; 
+	cout << "Paddle OBB.y " << boundingBox->position.y << endl;
+	cout << "Paddle OBB.z " << boundingBox->position.z << endl;
+	cout << endl;*/
 }
 
 void Entity::Draw()
 {
-	cout << "Drawing Entity." << endl;
+	//cout << "Drawing Entity." << endl;
 	shape->Draw(currentPos, scalar, rotationAxis, rotationAmount);
 }
+
+
 
 void Entity::AddForce(vec3 force)
 {

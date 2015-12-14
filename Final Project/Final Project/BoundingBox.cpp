@@ -5,6 +5,9 @@ BoundingBox::BoundingBox(vec3 pos, vector<vec3> boxVerts, mat4 &mMatrix)
 {
 	//set pos 
 	position = pos;
+
+	box = boxVerts; 
+
 	//find centroid 
 	for (int i = 0; i < boxVerts.size(); i++)
 	{
@@ -38,6 +41,21 @@ BoundingBox::BoundingBox(vec3 pos, vector<vec3> boxVerts, mat4 &mMatrix)
 	//vec3(xmax, ymin, zmin) - vec3(xmin, ymin, zmin) --- Width half width 
 	vec3 e1vec = boxVerts[1] - boxVerts[0];
 	e1_Hc = length(e1vec) / 2;
+}
+
+void BoundingBox::setPos(vec3 newPos)
+{
+	//set new position
+	position = newPos;
+	//recalc centroid 
+	//find centroid 
+	for (int i = 0; i < box.size(); i++)
+	{
+		centroid += box[i];
+	}
+	centroid = centroid / (float)box.size();
+	centroid *= position;
+
 }
 
 

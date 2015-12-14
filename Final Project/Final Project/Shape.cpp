@@ -59,7 +59,7 @@ Shape::Shape(vector<vec3> verts, GLsizei vertCount, vector<vec3> normals, vector
 	index = programIndex;
 
 
-	VAO = 1;
+	//VAO = 1;
 	VBO = 1;
 
 

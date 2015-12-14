@@ -2,6 +2,7 @@
 #include <iostream>
 #include "ShaderHelpers.h"
 #include "Shape.h"
+#include "BoundingBox.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -19,7 +20,7 @@ class Entity
 public:
 	Entity(void);
 	~Entity(void);
-	Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, float rotationSpeed);
+	Entity(Shape* s, vec3 cp, vec3 scale1, vec3 axis, float rotationAmt, float rotationSpeed, vector<vec3> modelVerts);
 	void AddForce(vec3 force);
 	vec3 Seek(vec3 target, float mag);
 	vec3 Arrive(vec3 target);
@@ -28,6 +29,7 @@ public:
 	void Update();
 	void Draw();
 	void setRotationSpeed(float speed);
+	 
 	//getters
 	float getMass();
 	bool isActive();
@@ -40,6 +42,10 @@ public:
 	void setActive(bool a);
 	void setVelocity(vec3 v);
 	bool active;
+
+	//BoundingBox 
+	BoundingBox* boundingBox; 
+	vector<vec3> modelVertices; 
 
 private:
 	Shape* shape;

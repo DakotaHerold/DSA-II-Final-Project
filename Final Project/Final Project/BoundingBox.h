@@ -12,6 +12,7 @@ class BoundingBox
 public:
 	BoundingBox(vec3 pos, vector<vec3> boxVerts, mat4 &mMatrix);
 	~BoundingBox();
+	void setPos(vec3 newPos); 
 
 	//attributes 
 	vec3 position;
@@ -19,6 +20,9 @@ public:
 	vec4 xAxis;
 	vec4 yAxis;
 	vec4 zAxis;
+	
+	//box verts
+	vector<vec3> box; 
 
 	//center
 	vec3 centroid;
