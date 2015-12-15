@@ -36,7 +36,7 @@ bool ModelHelper::loadModelFile(
 		int res = fscanf(file, "%s", lineHeader);
 		if (res == EOF)
 		{
-			cout << "End of File!" << endl;
+			//cout << "End of File!" << endl;
 			break; // EOF = End Of File. Quit the loop.
 
 		}

@@ -92,6 +92,9 @@ ModelHelper mhelper;
 //collision detecter for SAT
 CollisionDetecter cd; 
 
+//Entity Container 
+vector<Entity*> gameObjects; 
+
 static float RandomFloat(float Min, float Max)
 {
 	return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
@@ -120,6 +123,11 @@ void mouseResponse(Entity* triangle)
 		triangle->setActive(true);
 	}
 
+
+}
+
+void setGame()
+{
 
 }
 
@@ -176,7 +184,7 @@ void init()
 	vector<vec3> normals; 
 	
 	//string file = "Models/Cube.obj"; 
-	bool res = mhelper.loadModelFile("Models/Cube.obj", vertices, uvs, normals);
+	bool res = mhelper.loadModelFile("Models/Paddle.obj", vertices, uvs, normals);
 	if (res == true)
 	{
 	//cout << "Model loaded successfully!" << endl;
@@ -187,7 +195,7 @@ void init()
 	}
 
 	vec3 initialPosition = vec3(-2.7f, 0.0f, 0.0f);
-	vec3 scale = vec3(1.0f, 1.0f, 1.0f); 
+	vec3 scale = vec3(1.5f, 1.5f, 1.5f);
 	vec3 rotAxis = vec3(1.0f, 1.0f, 1.0f); 
 	float rotAmt = 0.0f;
 	float rotSpeed = 0.0f; 
@@ -199,8 +207,11 @@ void init()
 
 	//Paddle B
 	//file = "Models/Cube.obj";
-	res = mhelper.loadModelFile("Models/Cube.obj", vertices, uvs, normals);
-	if (res == true)
+	vector<vec3> verticesB;
+	vector<vec2> uvsB;
+	vector<vec3> normalsB;
+	bool resB = mhelper.loadModelFile("Models/Paddle.obj", verticesB, uvsB, normalsB);
+	if (resB == true)
 	{
 		//cout << "Model loaded successfully!" << endl;
 	}
@@ -209,19 +220,22 @@ void init()
 		//cout << "Model could not be loaded!" << endl;
 	}
 
-	initialPosition = vec3(2.7f, 0.0f, 0.0f);
-	scale = vec3(1.0f, 1.0f, 1.0f);
-	rotAxis = vec3(1.0f, 1.0f, 1.0f);
-	rotAmt = 0.0f;
-	rotSpeed = 0.0f;
-	const GLsizei sizeB = vertices.size();
-	tempShape = new Shape(vertices, sizeB, normals, uvs, program);
-	PaddleB = Entity(tempShape, initialPosition, scale, rotAxis, rotAmt, rotSpeed, vertices);
+	vec3 initialPositionB = vec3(2.7f, 0.0f, 0.0f);
+	vec3 scaleB = vec3(1.5f, 1.5f, 1.5f);
+	vec3 rotAxisB = vec3(1.0f, 1.0f, 1.0f);
+	float rotAmtB = 0.0f;
+	float rotSpeedB = 0.0f;
+	const GLsizei sizeB = verticesB.size();
+	Shape* tempShapeB = new Shape(verticesB, sizeB, normalsB, uvsB, program);
+	PaddleB = Entity(tempShapeB, initialPositionB, scaleB, rotAxisB, rotAmtB, rotSpeedB, verticesB);
 
 
 	//Pong Ball
+	vector<vec3> verticesC;
+	vector<vec2> uvsC;
+	vector<vec3> normalsC;
 	//file = "Models/Sphere.obj";
-	res = mhelper.loadModelFile("Models/Sphere.obj", vertices, uvs, normals);
+	bool resC = mhelper.loadModelFile("Models/Sphere.obj", verticesC, uvsC, normalsC);
 	if (res == true)
 	{
 		//cout << "Model loaded successfully!" << endl;
@@ -231,19 +245,20 @@ void init()
 		//cout << "Model could not be loaded!" << endl;
 	}
 
-	initialPosition = vec3(0.0f, 0.0f, 0.0f);
-	scale = vec3(0.5f, 0.5f, 0.5f);
-	rotAxis = vec3(1.0f, 1.0f, 1.0f);
-	rotAmt = 0.0f;
-	rotSpeed = 0.0f;
-	const GLsizei sizeC = vertices.size();
-	tempShape = new Shape(vertices, sizeC, normals, uvs, program);
-	Ball = Entity(tempShape, initialPosition, scale, rotAxis, rotAmt, rotSpeed, vertices);
+	vec3 initialPositionC = vec3(0.0f, 0.0f, 0.0f);
+	vec3 scaleC = vec3(0.1f, 0.1f, 0.1f);
+	vec3 rotAxisC = vec3(1.0f, 1.0f, 1.0f);
+	float rotAmtC = 0.0f;
+	float rotSpeedC = 0.0f;
+	const GLsizei sizeC = verticesC.size();
+	Shape* tempShapeC = new Shape(verticesC, sizeC, normalsC, uvsC, program);
+	Ball = Entity(tempShapeC, initialPositionC, scaleC, rotAxisC, rotAmtC, rotSpeedC, verticesC);
 
 
-
-
-
+	//add gameObjects to 
+	gameObjects.push_back(&PaddleA); 
+	gameObjects.push_back(&PaddleB);
+	gameObjects.push_back(&Ball);
 
 
 	//glClearColor(0.392f,0.584f,0.929f,1.0f); 
@@ -334,29 +349,40 @@ void update()
 	{
 		//collision between left paddle and ball
 		//cout << "Paddle A and Ball colliding!" << endl; 
-		Ball.setVelocity(vec3(0.0f, 0.0f, 0.0f)); 
+		
+		vec3 vel = Ball.getVelocity(); 
+		Ball.AddForce(-2.0f * vel); 
 
 	}
+
 	else if (notColliding2 == false)
 	{
 		//collision between left paddle and ball
 		//cout << "Paddle B and Ball colliding!" << endl;
-		Ball.setVelocity(vec3(0.0f, 0.0f, 0.0f)); 
+
+		vec3 vel = Ball.getVelocity(); 
+		Ball.AddForce(-2.0f * vel );
 	}
 	else
 	{
-		if (Ball.getCurrentPos().x > 3.0f)
+		if (Ball.getCurrentPos().x > 3.0f || Ball.getCurrentPos().x < -3.0f)
 		{
 			Ball.setCurrentPos(vec3(0.0f, 0.0f, 0.0f));
 		}
-		Ball.AddForce(vec3(0.01f, 0.0, 0.0f));
+		
+		//apply initial force to ball for the first 60 frames 
+		if (counter < 60)
+		{
+			Ball.AddForce(vec3(0.1f, 0.0f, 0.0f));
+			counter++; 
+		}
 	}
 
 	Ball.Update();
 
 	//Debugging 
-	Ball.printOBB(); 
-	PaddleB.printOBB(); 
+	//Ball.printOBB(); 
+	//PaddleB.printOBB(); 
 
 
 	/*check if mouse is being held

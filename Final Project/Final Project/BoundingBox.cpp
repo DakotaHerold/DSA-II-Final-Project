@@ -39,18 +39,20 @@ BoundingBox::BoundingBox(vec3 pos, vector<vec3> boxVerts, mat4 &mMatrix)
 	vec3 e0vec = boxVerts[7] - boxVerts[6];
 	e0_Dc = length(e0vec) / 2;
 
-	// vec3(xmin, ymax, zmin) - vec3(xmin, ymin, zmin) --- Height half width 
+	// vec3(xmin, ymax, zmin) - vec3(xmin, ymin, zmin) --- Width half width 
 	vec3 e2vec = boxVerts[2] - boxVerts[0];
-	e2_Wc = length(e2vec) / 2;
+	e2_Wc = length(e2vec) / 12;
 
-	//vec3(xmax, ymin, zmin) - vec3(xmin, ymin, zmin) --- Width half width 
+	//vec3(xmax, ymin, zmin) - vec3(xmin, ymin, zmin) --- Height half width 
 	vec3 e1vec = boxVerts[1] - boxVerts[0];
-	e1_Hc = length(e1vec) / 2;
+	e1_Hc = length(e1vec) / 3;
 
 	//Don't half to find half widths of Maya primitives, it is always 0.5f 
-	e0_Dc = 0.4f; 
-	e1_Hc = 0.4f; 
-	e2_Wc = 0.4f; 
+	//e0_Dc -= 0.1f; 
+	//e1_Hc -= 0.1f;
+
+	//tweaking for game paddles - do this in init 
+	//e2_Wc -= 0.225f;
 }
 
 void BoundingBox::setPos(vec3 newPos)
