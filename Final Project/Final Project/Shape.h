@@ -18,7 +18,7 @@ public:
 	Shape(void);
 	~Shape(void);
 	//Shape(GLfloat verts[], GLsizei vertCount, GLuint programIndex, bool h);
-	Shape(vector<vec3> verts, GLsizei vertCount, vector<vec3> normals, vector<vec2> uvs, GLuint programIndex);
+	Shape(vector<vec3> verts, GLsizei vertCount, vector<vec3> normals, vector<vec2> uvs, string tex, GLuint programIndex);
 	void setWorldMatrix(const mat4 &matrix);
 	void Draw(float x, float y, float xScale, float yScale);
 	void Draw(vec3 pos, vec3 scalar, vec3 axis, float angle);

@@ -53,7 +53,7 @@ Shape::~Shape(void)
 //	matrixLoc = glGetUniformLocation(index, "worldMatrix");
 //}
 
-Shape::Shape(vector<vec3> verts, GLsizei vertCount, vector<vec3> normals, vector<vec2> uvs, GLuint programIndex)
+Shape::Shape(vector<vec3> verts, GLsizei vertCount, vector<vec3> normals, vector<vec2> uvs, string tex, GLuint programIndex)
 {
 	numVertices = vertCount;
 	index = programIndex;
@@ -97,7 +97,7 @@ Shape::Shape(vector<vec3> verts, GLsizei vertCount, vector<vec3> normals, vector
 
 	//Get texture data into the texture sampler
 	GLuint texID = SOIL_load_OGL_texture(
-		"archer.jpg",
+		tex.c_str(),
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_INVERT_Y);

@@ -25,6 +25,8 @@ GLuint VBO = 1;
 GLuint VBO_color = 1;
 GLuint VAO = 1;
 float previousTime;
+int pLScore = 0;
+int pRScore = 0;
 
 
 //default axis
@@ -200,7 +202,7 @@ void init()
 	float rotAmt = 0.0f;
 	float rotSpeed = 0.0f; 
 	const GLsizei sizeA = vertices.size();
-	Shape* tempShape = new Shape(vertices, sizeA, normals, uvs, program); 
+	Shape* tempShape = new Shape(vertices, sizeA, normals, uvs, "texture.jpg", program); 
 	PaddleA = Entity(tempShape, initialPosition, scale, rotAxis, rotAmt, rotSpeed, vertices); 
 	
 
@@ -226,7 +228,7 @@ void init()
 	float rotAmtB = 0.0f;
 	float rotSpeedB = 0.0f;
 	const GLsizei sizeB = verticesB.size();
-	Shape* tempShapeB = new Shape(verticesB, sizeB, normalsB, uvsB, program);
+	Shape* tempShapeB = new Shape(verticesB, sizeB, normalsB, uvsB, "texture.jpg", program);
 	PaddleB = Entity(tempShapeB, initialPositionB, scaleB, rotAxisB, rotAmtB, rotSpeedB, verticesB);
 
 
@@ -251,7 +253,7 @@ void init()
 	float rotAmtC = 0.0f;
 	float rotSpeedC = 0.0f;
 	const GLsizei sizeC = verticesC.size();
-	Shape* tempShapeC = new Shape(verticesC, sizeC, normalsC, uvsC, program);
+	Shape* tempShapeC = new Shape(verticesC, sizeC, normalsC, uvsC, "texture.jpg", program);
 	Ball = Entity(tempShapeC, initialPositionC, scaleC, rotAxisC, rotAmtC, rotSpeedC, verticesC);
 
 
@@ -365,15 +367,28 @@ void update()
 	}
 	else
 	{
-		if (Ball.getCurrentPos().x > 3.0f || Ball.getCurrentPos().x < -3.0f)
+		if (Ball.getCurrentPos().x > 4.0f)
 		{
 			Ball.setCurrentPos(vec3(0.0f, 0.0f, 0.0f));
+
+			// add score to left player
+			pLScore++;
+			cout << "Left Player Score: " << pLScore << endl;
+		}
+
+		if (Ball.getCurrentPos().x < -4.0f)
+		{
+			Ball.setCurrentPos(vec3(0.0f, 0.0f, 0.0f));
+
+			// add score to right player
+			pRScore++;
+			cout << "Right Player Score: " << pRScore << endl;
 		}
 		
 		//apply initial force to ball for the first 60 frames 
 		if (counter < 60)
 		{
-			Ball.AddForce(vec3(0.1f, 0.0f, 0.0f));
+			Ball.AddForce(vec3(0.1f, rand() % 5 + (-2), 0.0f));
 			counter++; 
 		}
 	}
@@ -404,7 +419,7 @@ void update()
 
 	//get current position - 400
 	//reset cursor postion with glfw set cursor pos to center of screen
-	glfwSetCursorPos(window, 500, 300);
+	//glfwSetCursorPos(window, 500, 300);
 
 
 	//CAMERA CODE 
@@ -471,7 +486,7 @@ void update()
 
 
 	//step 6 -set cursor to center of screen 
-	glfwSetCursorPos(window, 500, 300);
+	//glfwSetCursorPos(window, 500, 300);
 
 }
 
@@ -652,7 +667,7 @@ int main(int argc, char** argv)
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
 	//create window
-	window = glfwCreateWindow(1000, 600, "OpenGL Game and Physics Engine Review", NULL, NULL);
+	window = glfwCreateWindow(1000, 600, "DSA II Final", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
