@@ -96,7 +96,7 @@ Shape::Shape(vector<vec3> verts, GLsizei vertCount, vector<vec3> normals, vector
 
 
 	//Get texture data into the texture sampler
-	GLuint texID = SOIL_load_OGL_texture(
+	texID = SOIL_load_OGL_texture(
 		tex.c_str(),
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
@@ -167,6 +167,7 @@ void Shape::Draw(vec3 pos, vec3 scalar, vec3 axis, float angle)
 
 	setWorldMatrix(matrix);
 	// Draw the triangle/Model !
+	glBindTexture(GL_TEXTURE_2D, texID);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glDrawArrays(GL_TRIANGLES, 0, numVertices);

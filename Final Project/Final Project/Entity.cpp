@@ -149,9 +149,9 @@ void Entity::Update()
 	previousTime = currentTime;
 
 	//add acceleration to velocity 
-	velocity.x += acceleration.x;
-	velocity.y += acceleration.y;
-	velocity.z += acceleration.z;
+	velocity.x += acceleration.x * dt;
+	velocity.y += acceleration.y * dt;
+	velocity.z += acceleration.z * dt;
 	//add velocity to position with dt
 	currentPos.x += dt * velocity.x;
 	currentPos.y += dt * velocity.y;

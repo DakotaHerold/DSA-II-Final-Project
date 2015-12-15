@@ -32,6 +32,7 @@ private:
 	GLsizei numVertices;
 	GLint offset;
 	GLint s1;
+	GLuint texID; 
 
 	GLuint pos;
 	GLuint rotation;

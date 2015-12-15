@@ -73,6 +73,7 @@ bool pBup;
 bool pBdown; 
 
 
+
 //global reference to window
 GLFWwindow* window;
 
@@ -354,7 +355,8 @@ void update()
 		
 		vec3 vel = Ball.getVelocity(); 
 		Ball.AddForce(-2.0f * vel); 
-		Ball.setVelocity(vel + vec3(0, rand() % 20, 0));
+		Ball.setVelocity(vel + vec3(0.0f, RandomFloat(-10.0f, 10.0f), 0.0f));
+
 
 	}
 
@@ -365,7 +367,7 @@ void update()
 
 		vec3 vel = Ball.getVelocity(); 
 		Ball.AddForce(-2.0f * vel );
-		Ball.setVelocity(vel + vec3(0, rand() % 20, 0));
+		Ball.setVelocity(vel + vec3(0.0f, RandomFloat(-10.0f, 10.0f), 0.0f));
 	}
 	else
 	{
@@ -387,7 +389,7 @@ void update()
 			cout << "Right Player Score: " << pRScore << endl;
 		}
 
-		if (Ball.getCurrentPos().y > 2.0f)
+		/*if (Ball.getCurrentPos().y > 2.0f)
 		{
 			vec3 vel = Ball.getVelocity();
 			Ball.AddForce(-2.0f * vel);
@@ -400,7 +402,7 @@ void update()
 			Ball.AddForce(-2.0f * vel);
 			Ball.setVelocity(vel + vec3(0, rand() % 20, 0));
 		}
-		
+		*/
 		//apply initial force to ball for the first 60 frames 
 		if (counter < 60)
 		{
