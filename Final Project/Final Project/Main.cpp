@@ -2,6 +2,7 @@
 #include "ShaderHelpers.h"
 #include "ModelHelper.h"
 #include "ProceduralModels.h"
+#include "CollisionDetecter.h"
 #include "Shape.h"
 #include "Entity.h"
 #include "Camera.h"
@@ -88,6 +89,9 @@ Entity Ball;
 //model helper
 ModelHelper mhelper; 
 
+//collision detecter for SAT
+CollisionDetecter cd; 
+
 static float RandomFloat(float Min, float Max)
 {
 	return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
@@ -132,17 +136,9 @@ void init()
 		glUseProgram(program);
 	}
 
-	program2 = helper.loadShaderProgram("Shaders/vertexShader.glsl", "Shaders/fragmentShader.glsl");
-	if (program2 != 0)
-	{
-		glUseProgram(program2);
-	}
-
-	
-
 	//helper.setShaderColor(program, "uniformColor", 1.0f, 1.0f, .0f);
 
-	cout << "Initializing" << endl;
+	//cout << "Initializing" << endl;
 
 	//initialize random variables
 	randX = 0.0f;
@@ -179,15 +175,15 @@ void init()
 	vector<vec2> uvs;
 	vector<vec3> normals; 
 	
-	string file = "Models/Cube.obj"; 
+	//string file = "Models/Cube.obj"; 
 	bool res = mhelper.loadModelFile("Models/Cube.obj", vertices, uvs, normals);
 	if (res == true)
 	{
-	cout << "Model loaded successfully!" << endl;
+	//cout << "Model loaded successfully!" << endl;
 	}
 	else
 	{
-	cout << "Model could not be loaded!" << endl;
+	//cout << "Model could not be loaded!" << endl;
 	}
 
 	vec3 initialPosition = vec3(-2.7f, 0.0f, 0.0f);
@@ -202,35 +198,47 @@ void init()
 
 
 	//Paddle B
-	vector<vec3> verticesB;
-	vector<vec2> uvsB;
-	vector<vec3> normalsB;
-
-	string fileB = "Models/Cube.obj";
-	float resB = mhelper.loadModelFile("Models/Cube.obj", verticesB, uvsB, normalsB);
-	if (resB == true)
+	//file = "Models/Cube.obj";
+	res = mhelper.loadModelFile("Models/Cube.obj", vertices, uvs, normals);
+	if (res == true)
 	{
-		cout << "Model loaded successfully!" << endl;
+		//cout << "Model loaded successfully!" << endl;
 	}
 	else
 	{
-		cout << "Model could not be loaded!" << endl;
+		//cout << "Model could not be loaded!" << endl;
 	}
 
-	vec3 initialPositionB = vec3(-2.5f, 0.0f, 0.0f);
-	vec3 scaleB = vec3(1.0f, 1.0f, 1.0f);
-	vec3 rotAxisB = vec3(1.0f, 1.0f, 1.0f);
-	float rotAmtB = 0.0f;
-	float rotSpeedB = 0.0f;
-	const GLsizei sizeB = verticesB.size();
-	Shape* tempShapeB = new Shape(verticesB, sizeB, normalsB, uvsB, program);
-	PaddleB = Entity(tempShapeB, initialPositionB, scaleB, rotAxisB, rotAmtB, rotSpeedB, verticesB);
-	
-	//PaddleB = PaddleA; 
-	//PaddleB.setCurrentPos(vec3(-2.0f, 0.0f, 0.0f)); 
+	initialPosition = vec3(2.7f, 0.0f, 0.0f);
+	scale = vec3(1.0f, 1.0f, 1.0f);
+	rotAxis = vec3(1.0f, 1.0f, 1.0f);
+	rotAmt = 0.0f;
+	rotSpeed = 0.0f;
+	const GLsizei sizeB = vertices.size();
+	tempShape = new Shape(vertices, sizeB, normals, uvs, program);
+	PaddleB = Entity(tempShape, initialPosition, scale, rotAxis, rotAmt, rotSpeed, vertices);
 
 
+	//Pong Ball
+	//file = "Models/Sphere.obj";
+	res = mhelper.loadModelFile("Models/Sphere.obj", vertices, uvs, normals);
+	if (res == true)
+	{
+		//cout << "Model loaded successfully!" << endl;
+	}
+	else
+	{
+		//cout << "Model could not be loaded!" << endl;
+	}
 
+	initialPosition = vec3(0.0f, 0.0f, 0.0f);
+	scale = vec3(0.5f, 0.5f, 0.5f);
+	rotAxis = vec3(1.0f, 1.0f, 1.0f);
+	rotAmt = 0.0f;
+	rotSpeed = 0.0f;
+	const GLsizei sizeC = vertices.size();
+	tempShape = new Shape(vertices, sizeC, normals, uvs, program);
+	Ball = Entity(tempShape, initialPosition, scale, rotAxis, rotAmt, rotSpeed, vertices);
 
 
 
@@ -288,9 +296,9 @@ void update()
 	PaddleA.Update();
 
 	//Debugging - print PaddleA pos
-	cout << "PaddleA.x" << PaddleA.getCurrentPos().x << endl; 
-	cout << "PaddleA.y" << PaddleA.getCurrentPos().y << endl;
-	cout << "PaddleA.z" << PaddleA.getCurrentPos().z << endl;
+	//cout << "PaddleA.x" << PaddleA.getCurrentPos().x << endl; 
+	//cout << "PaddleA.y" << PaddleA.getCurrentPos().y << endl;
+	//cout << "PaddleA.z" << PaddleA.getCurrentPos().z << endl;
 
 
 	//Paddle B 
@@ -311,13 +319,44 @@ void update()
 	PaddleB.Update();
 
 	//Debugging - print PaddleB pos
-	cout << "PaddleB.x" << PaddleB.getCurrentPos().x << endl;
-	cout << "PaddleB.y" << PaddleB.getCurrentPos().y << endl;
-	cout << "PaddleB.z" << PaddleB.getCurrentPos().z << endl;
+	//cout << "PaddleB.x" << PaddleB.getCurrentPos().x << endl;
+	//cout << "PaddleB.y" << PaddleB.getCurrentPos().y << endl;
+	//cout << "PaddleB.z" << PaddleB.getCurrentPos().z << endl;
 
 
 
 
+
+	//Update Ball 
+	bool notColliding = cd.SAT(*PaddleA.boundingBox, *Ball.boundingBox); 
+	bool notColliding2 = cd.SAT(*PaddleB.boundingBox, *Ball.boundingBox);
+	if (notColliding == false)
+	{
+		//collision between left paddle and ball
+		//cout << "Paddle A and Ball colliding!" << endl; 
+		Ball.setVelocity(vec3(0.0f, 0.0f, 0.0f)); 
+
+	}
+	else if (notColliding2 == false)
+	{
+		//collision between left paddle and ball
+		//cout << "Paddle B and Ball colliding!" << endl;
+		Ball.setVelocity(vec3(0.0f, 0.0f, 0.0f)); 
+	}
+	else
+	{
+		if (Ball.getCurrentPos().x > 3.0f)
+		{
+			Ball.setCurrentPos(vec3(0.0f, 0.0f, 0.0f));
+		}
+		Ball.AddForce(vec3(0.01f, 0.0, 0.0f));
+	}
+
+	Ball.Update();
+
+	//Debugging 
+	Ball.printOBB(); 
+	PaddleB.printOBB(); 
 
 
 	/*check if mouse is being held
@@ -421,6 +460,8 @@ void draw()
 	//te.Draw(); 
 	//Model->Draw(vec3(0.0f, 0.0f, -4.0f), vec3(1.0f, 1.0f, 1.0f), rotAxis, rotationAmount);
 	PaddleA.Draw(); 
+	PaddleB.Draw(); 
+	Ball.Draw(); 
 
 	//Triangle->Draw(vec3(0, 0, 0), vec3(1.0f, 1.0f, 1.0f), zRotAxis, rotationAmount);
 

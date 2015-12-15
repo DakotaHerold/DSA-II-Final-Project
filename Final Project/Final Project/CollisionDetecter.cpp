@@ -34,7 +34,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e1_Hc * dot(A.xAxis, B.yAxis))
 		+ abs(B.e0_Dc * dot(A.xAxis, B.zAxis))))
 	{
-		cout << "no intersection in a-x axis\n";
+		//cout << "no intersection in a-x axis\n";
 		return true;
 	}
 	else
@@ -60,7 +60,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e1_Hc * dot(A.yAxis, B.yAxis))
 		+ abs(B.e0_Dc * dot(A.yAxis, B.zAxis))))
 	{
-		std::cout << "no intersection in a-y axis\n";
+		//std::cout << "no intersection in a-y axis\n";
 		return true;
 	}
 	else
@@ -86,7 +86,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e1_Hc * dot(A.zAxis, B.yAxis))
 		+ abs(B.e0_Dc * dot(A.zAxis, B.zAxis))))
 	{
-		cout << "no intersection in a-z axis\n";
+		//cout << "no intersection in a-z axis\n";
 		return true;
 	}
 	else
@@ -112,7 +112,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(A.e1_Hc * dot(A.yAxis, B.xAxis))
 		+ abs(A.e0_Dc * dot(A.zAxis, B.xAxis))))
 	{
-		std::cout << "no intersection in b-x axis\n";
+		//std::cout << "no intersection in b-x axis\n";
 		return true;
 	}
 	else
@@ -138,7 +138,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(A.e1_Hc * dot(A.yAxis, B.yAxis))
 		+ abs(A.e0_Dc * dot(A.zAxis, B.yAxis))))
 	{
-		std::cout << "no intersection in b-y axis\n";
+		//std::cout << "no intersection in b-y axis\n";
 		return true;
 	}
 	else
@@ -164,7 +164,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(A.e1_Hc * dot(A.yAxis, B.zAxis))
 		+ abs(A.e0_Dc * dot(A.zAxis, B.zAxis))))
 	{
-		std::cout << "no intersection in b-x axis\n";
+		//std::cout << "no intersection in b-x axis\n";
 		return true;
 	}
 	else
@@ -192,7 +192,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e1_Hc * dot(A.xAxis, B.zAxis))
 		+ abs(B.e0_Dc * dot(A.xAxis, B.yAxis)))
 	{
-		std::cout << "no intersection in ax-bx axis\n";
+		//std::cout << "no intersection in ax-bx axis\n";
 		return true;
 	}
 	else
@@ -220,7 +220,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e2_Wc * dot(A.xAxis, B.zAxis))
 		+ abs(B.e0_Dc * dot(A.xAxis, B.xAxis)))
 	{
-		std::cout << "no intersection in ax-by axis\n";
+		//std::cout << "no intersection in ax-by axis\n";
 		return true;
 	}
 	else
@@ -248,7 +248,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e2_Wc * dot(A.xAxis, B.yAxis))
 		+ abs(B.e1_Hc * dot(A.xAxis, B.xAxis)))
 	{
-		std::cout << "no intersection in ax-bz axis\n";
+		//std::cout << "no intersection in ax-bz axis\n";
 		return true;
 	}
 	else
@@ -276,7 +276,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e1_Hc * dot(A.yAxis, B.zAxis))
 		+ abs(B.e0_Dc * dot(A.yAxis, B.yAxis)))
 	{
-		std::cout << "no intersection in ay-bx axis\n";
+		//std::cout << "no intersection in ay-bx axis\n";
 		return true;
 	}
 	else
@@ -304,7 +304,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e2_Wc * dot(A.yAxis, B.zAxis))
 		+ abs(B.e0_Dc * dot(A.yAxis, B.xAxis)))
 	{
-		std::cout << "no intersection in ay-by axis\n";
+		//std::cout << "no intersection in ay-by axis\n";
 		return true;
 	}
 	else
@@ -332,7 +332,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e2_Wc * dot(A.yAxis, B.yAxis))
 		+ abs(B.e1_Hc * dot(A.yAxis, B.xAxis)))
 	{
-		std::cout << "no intersection in ay-bz axis\n";
+		//std::cout << "no intersection in ay-bz axis\n";
 		return true;
 	}
 	else
@@ -360,7 +360,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e1_Hc * dot(A.zAxis, B.zAxis))
 		+ abs(B.e0_Dc * dot(A.zAxis, B.yAxis)))
 	{
-		std::cout << "no intersection in az-bx axis\n";
+		//std::cout << "no intersection in az-bx axis\n";
 		return true;
 	}
 	else
@@ -416,7 +416,7 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 		+ abs(B.e2_Wc * dot(A.zAxis, B.yAxis))
 		+ abs(B.e1_Hc * dot(A.zAxis, B.xAxis)))
 	{
-		std::cout << "no intersection in az-bz axis\n";
+		//std::cout << "no intersection in az-bz axis\n";
 		return true;
 	}
 	else
@@ -437,6 +437,6 @@ bool CollisionDetecter::SAT(BoundingBox &A, BoundingBox &B)
 	}
 
 	mtv = vec4(mtvAxis)*mtvMag;
-	cout << "Max Translation Vector: " << "X: " << mtv.x << " Y: " << mtv.y << " Z: " << mtv.z << endl;
+	//cout << "Max Translation Vector: " << "X: " << mtv.x << " Y: " << mtv.y << " Z: " << mtv.z << endl;
 	return false;
 }

@@ -29,6 +29,7 @@ public:
 	void Update();
 	void Draw();
 	void setRotationSpeed(float speed);
+	void printOBB(); 
 	 
 	//getters
 	float getMass();

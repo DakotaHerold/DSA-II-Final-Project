@@ -157,18 +157,7 @@ void Entity::Update()
 	currentPos.y += dt * velocity.y;
 	currentPos.z += dt * velocity.z;
 
-	//check for walls
-	/*if (currentPos.x > 1.0f)
-	{
-	currentPos.x = -1.0f;
-	velocity.x = 0.0f;
-	}
-	else if (currentPos.x < -1.1f)
-	{
-	currentPos.x = 1.0f;
-	velocity.x = 0.0f;
-	}*/
-
+	//check for ceiling/floor 
 	float yBounds = 4.0f; 
 	if (currentPos.y > yBounds)
 	{
@@ -190,12 +179,7 @@ void Entity::Update()
 
 	//Update bounding box 
 	boundingBox->setPos(currentPos); 
-	//Debugging bounding box
-	/*cout << endl;
-	cout << "Paddle OBB.x " << boundingBox->position.x << endl; 
-	cout << "Paddle OBB.y " << boundingBox->position.y << endl;
-	cout << "Paddle OBB.z " << boundingBox->position.z << endl;
-	cout << endl;*/
+	
 }
 
 void Entity::Draw()
@@ -357,6 +341,17 @@ void Entity::setCurrentPos(float nx, float ny, float nz)
 	currentPos.x = nx;
 	currentPos.y = ny;
 	currentPos.z = nz;
+}
+
+void Entity::printOBB()
+{
+	cout << "OBB pos.x" << boundingBox->position.x << endl;
+	cout << "OBB pos.y" << boundingBox->position.y << endl;
+	cout << "OBB pos.z" << boundingBox->position.z << endl;
+
+	cout << "OBB centroid.x" << boundingBox->centroid.x << endl;
+	cout << "OBB centroid.y" << boundingBox->centroid.y << endl;
+	cout << "OBB centroid.z" << boundingBox->centroid.z << endl;
 }
 
 void Entity::setCurrentPos(vec3 newPos)
