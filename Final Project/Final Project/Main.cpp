@@ -354,6 +354,7 @@ void update()
 		
 		vec3 vel = Ball.getVelocity(); 
 		Ball.AddForce(-2.0f * vel); 
+		Ball.setVelocity(vel + vec3(0, rand() % 20, 0));
 
 	}
 
@@ -364,6 +365,7 @@ void update()
 
 		vec3 vel = Ball.getVelocity(); 
 		Ball.AddForce(-2.0f * vel );
+		Ball.setVelocity(vel + vec3(0, rand() % 20, 0));
 	}
 	else
 	{
@@ -383,6 +385,20 @@ void update()
 			// add score to right player
 			pRScore++;
 			cout << "Right Player Score: " << pRScore << endl;
+		}
+
+		if (Ball.getCurrentPos().y > 2.0f)
+		{
+			vec3 vel = Ball.getVelocity();
+			Ball.AddForce(-2.0f * vel);
+			Ball.setVelocity(vel + vec3(0, rand() % 20, 0));
+		}
+
+		if (Ball.getCurrentPos().y < -2.0f)
+		{
+			vec3 vel = Ball.getVelocity();
+			Ball.AddForce(-2.0f * vel);
+			Ball.setVelocity(vel + vec3(0, rand() % 20, 0));
 		}
 		
 		//apply initial force to ball for the first 60 frames 
